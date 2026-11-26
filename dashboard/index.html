@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Token Radar — pre-token protocols ranked by implied value</title>
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <div class="brand">
+      <span class="dot" aria-hidden="true"></span>
+      <div>
+        <h1>TOKEN RADAR</h1>
+        <p class="sub">Pre-token protocols, ranked by what a token launch would be worth.</p>
+      </div>
+    </div>
+    <div class="meta" id="meta">
+      <span>Snapshot <b id="asof">—</b></span>
+      <span>Source <b>DefiLlama</b></span>
+      <span>Model <b id="modelver">—</b></span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="stats" id="stats" aria-label="Summary"></section>
+
+  <nav class="tabs" aria-label="Views">
+    <button id="tab-radar" class="tab active" type="button">Pre-token radar</button>
+    <button id="tab-live" class="tab" type="button">Already trading</button>
+  </nav>
+
+  <section class="controls" id="controls">
+    <input id="q" type="search" placeholder="Search a protocol…" aria-label="Search a protocol" autocomplete="off">
+    <select id="cat" aria-label="Filter by category"><option value="">All categories</option></select>
+    <select id="chain" aria-label="Filter by chain"><option value="">All chains</option></select>
+    <label class="check"><input id="wl" type="checkbox"> Watchlist only</label>
+    <span class="count" id="count"></span>
+  </section>
+
+  <section class="tablewrap">
+    <table id="board">
+      <thead>
+        <tr>
+          <th data-sort="rank" class="num sorted">#</th>
+          <th data-sort="name">Protocol</th>
+          <th data-sort="category">Category</th>
+          <th data-sort="chains">Chains</th>
+          <th data-sort="tvl" class="num">TVL</th>
+          <th data-sort="chg" class="num">7d</th>
+          <th data-sort="age" class="num">Age</th>
+          <th data-sort="value" class="num">Implied value</th>
+        </tr>
+      </thead>
+      <tbody id="rows"></tbody>
+    </table>
+    <p class="empty" id="empty" hidden>No protocol matches this filter.</p>
+  </section>
+
+  <section class="model" id="model">
+    <h2>How the model works</h2>
+    <p class="formula">implied value = TVL × 0.25 × growth × maturity</p>
+    <div class="factors">
+      <div>
+        <h3>Base — TVL × 0.25</h3>
+        <p>A token is worth a quarter of the TVL it secures. The protocol's own locked value is the floor of the claim.</p>
+      </div>
+      <div>
+        <h3>Growth — 7-day change</h3>
+        <p>The 7-day TVL change, clamped to −50%…+150% and weighted ×0.5. A week's spike never decides the ranking — the snapshot's fastest riser printed +4448%.</p>
+      </div>
+      <div>
+        <h3>Maturity — no-token duration</h3>
+        <p>0.50 at listing, rising to 1.20 after four years. A protocol that has run for years without a token is worth more than one that listed last month; the wait itself is the signal. No listing date on file counts as one year old.</p>
+      </div>
+      <div>
+        <h3>What never gets ranked</h3>
+        <p>Wrapped, staked and bridged products (WBTC, Binance staked ETH, USDT0…) and exchange products are left off this board: their token already trades, so they are not launch candidates. They appear under “Already trading” instead.</p>
+      </div>
+    </div>
+    <p class="note">Implied value is this entry's claim, not a price target and not financial advice. It is computed from the sealed DefiLlama snapshot alone — TVL, 7-day change and listing date — with no protocol name hardcoded into the ranking.</p>
+    <p class="note"><b>How the farm plan is built.</b> Each protocol gets 7 steps, built from its own figures: the capital tier comes from its TVL ($250 at ≥$1B, $150 at ≥$200M, $100 at ≥$50M, $50 below that); the hold length comes from its age (60 days if listed under 6 months, 45 under a year, 30 after that); the main and second actions are chosen by category — lending, DEX, curator, prediction, RWA, derivatives, stablecoin, or a default deposit. Every step states a dollar amount and a time cost.</p>
+  </section>
+</main>
+
+<aside class="drawer" id="drawer" aria-label="Protocol detail" hidden>
+  <button class="close" id="drawer-close" type="button" aria-label="Close detail">×</button>
+  <div id="detail"></div>
+</aside>
+
+<footer class="wrap foot">
+  <p>Data: DefiLlama protocols snapshot, sealed 2026-11-14. Board covers the 40-protocol watchlist plus every other rankable pre-token protocol in the snapshot. “Already trading” lists the 24 largest live-token protocols by market cap, for reference only — they are not ranked.</p>
+</footer>
+
+<script src="../data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
